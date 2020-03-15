@@ -1,18 +1,13 @@
-// #pragma once
-
-
 #include <SFML/Graphics.hpp>
-#include <iostream>
 
 #include "BezierPoint.hpp"
 
-using namespace std;
-
 
 int main() {
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
-    sf::RenderWindow window(sf::VideoMode(1024, 1024), "Bezier curves", sf::Style::Close, settings);
+    sf::RenderWindow window(desktop, "Bezier curves", sf::Style::Close, settings);
 
     // tmp bezier curve
     BezierPoint pt1({300.f, 700.f});
