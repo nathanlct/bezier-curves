@@ -9,8 +9,10 @@ int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     sf::RenderWindow window(desktop, "Bezier curves", sf::Style::Default, settings);
-    // sf::RenderWindow window(sf::VideoMode(1000, 1000), "Bezier curves", sf::Style::Default, settings);
     
+    window.setFramerateLimit(30);
+    window.setVerticalSyncEnabled(true);
+
     BezierCurve curve;
     bool dragging = false;
 
