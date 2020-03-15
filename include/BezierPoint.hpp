@@ -12,9 +12,11 @@ public:
         pos_shape(radius),
         front_handle_shape(radius),
         back_handle_shape(radius),
-        handles(sf::Lines, 4),
+        front_handle_line(sf::Lines, 2),
+        back_handle_line(sf::Lines, 2),
         symmetric(true),
-        focused(2)
+        display_front_handle(true),
+        display_back_handle(true)
     {
         for(auto* shape: {&pos_shape, &front_handle_shape, &back_handle_shape}) {
             shape->setRadius(radius);
@@ -29,17 +31,25 @@ public:
         front_handle_shape.setPosition(front_handle);
         back_handle_shape.setPosition(back_handle);
 
-        handles[0].position = pos;
-        handles[1].position = front_handle;
-        handles[2].position = pos;
-        handles[3].position = back_handle;
-        for(int i = 0; i < 4; ++i) {
-            handles[i].color = sf::Color::Blue;
+        front_handle_line[0].position = pos;
+        front_handle_line[1].position = front_handle;
+        back_handle_line[0].position = pos;
+        back_handle_line[1].position = back_handle;
+        for(int i = 0; i < 2; ++i) {
+            front_handle_line[i].color = sf::Color::Blue;
+            back_handle_line[i].color = sf::Color::Blue;
         }
     }
 
-    void set_focused(bool new_focused) {
-        focused = new_focused;
+    void set_display_front_handle(bool new_display) {
+        display_front_handle = new_display;
+    }
+    void set_display_back_handle(bool new_display) {
+        display_back_handle = new_display;
+    }
+    void set_display_handles(bool new_display) {
+        display_front_handle = new_display;
+        display_back_handle = new_display;
     }
 
     sf::Vector2f get_pos() {
@@ -55,8 +65,8 @@ public:
     void set_pos(const sf::Vector2f& new_pos) {
         sf::Vector2f delta = new_pos - pos;
         pos = new_pos;
-        front_handle += delta;
-        back_handle += delta;
+        _set_front_handle(front_handle + new_pos - pos);
+        _set_back_handle(back_handle + new_pos - pos);
     }
     void set_front_handle(const sf::Vector2f& new_pos) {
         if(symmetric) {
@@ -77,38 +87,38 @@ private:
     void _set_back_handle(const sf::Vector2f& new_pos) {
         back_handle = new_pos;
         back_handle_shape.setPosition(new_pos);
-        handles[3].position = new_pos;
+        back_handle_line[1].position = new_pos;
     }
     void _set_front_handle(const sf::Vector2f& new_pos) {
         front_handle = new_pos;
         front_handle_shape.setPosition(new_pos);
-        handles[1].position = new_pos;
+        front_handle_line[1].position = new_pos;
     }
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
     {   
-        if(focused) {
-            target.draw(handles, states);
-        }
+        if(display_front_handle) target.draw(front_handle_line, states);
+        if(display_back_handle) target.draw(back_handle_line, states);
+
         target.draw(pos_shape, states);
-        if(focused) {
-            target.draw(front_handle_shape, states);
-            target.draw(back_handle_shape, states);
-        }
+
+        if(display_front_handle) target.draw(front_handle_shape, states);
+        if(display_back_handle) target.draw(back_handle_shape, states);
     }
 
     sf::Vector2f pos;
     sf::Vector2f front_handle;
     sf::Vector2f back_handle;
 
-    // whether handles are symmetric
     bool symmetric;
-    // whether handles are displayed
-    bool focused;
+
+    bool display_front_handle;
+    bool display_back_handle;
 
     sf::CircleShape pos_shape;
     sf::CircleShape front_handle_shape;
     sf::CircleShape back_handle_shape;
 
-    sf::VertexArray handles;
+    sf::VertexArray front_handle_line;
+    sf::VertexArray back_handle_line;
 };

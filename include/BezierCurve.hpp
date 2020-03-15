@@ -15,7 +15,10 @@ public:
 
     void add(BezierPoint pt) {
         if(!points.empty()) {
-            points.back().set_focused(false);
+            for(BezierPoint& point: points) {
+                point.set_display_handles(false);
+            }
+            points.back().set_display_front_handle(true);
         }
         points.push_back(pt);
     }
