@@ -9,8 +9,10 @@ int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     sf::RenderWindow window(desktop, "Bezier curves", sf::Style::Default, settings);
+    // sf::RenderWindow window(sf::VideoMode(1000, 1000), "Bezier curves", sf::Style::Default, settings);
     
     BezierCurve curve;
+    bool dragging = false;
 
     while(window.isOpen())
     {
@@ -26,9 +28,25 @@ int main() {
                         case sf::Mouse::Left:
                             curve.add(BezierPoint({(float)event.mouseButton.x, 
                                                    (float)event.mouseButton.y}));
+                            dragging = true;
                             break;
                         default:
                             break;
+                    }
+                    break;
+                case sf::Event::MouseButtonReleased:
+                    switch(event.mouseButton.button) {
+                        case sf::Mouse::Left:
+                            dragging = false;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case sf::Event::MouseMoved:
+                    if(dragging) {
+                        curve.set_last_handle({(float)event.mouseMove.x,
+                                               (float)event.mouseMove.y});
                     }
                     break;
                 default:

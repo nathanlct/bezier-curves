@@ -18,7 +18,7 @@ public:
         for(auto* shape: {&pos_shape, &front_handle_shape, &back_handle_shape}) {
             shape->setRadius(radius);
             shape->setFillColor(sf::Color::White);
-            shape->setOutlineColor(sf::Color::Red);
+            shape->setOutlineColor(sf::Color::Blue);
             shape->setOutlineThickness(2.f);
             shape->setOrigin({radius, radius});
         }
@@ -33,7 +33,7 @@ public:
         handles[2].position = pos;
         handles[3].position = back_handle;
         for(int i = 0; i < 4; ++i) {
-            handles[i].color = sf::Color::Red;
+            handles[i].color = sf::Color::Blue;
         }
     }
 

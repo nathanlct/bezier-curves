@@ -17,6 +17,12 @@ public:
         points.push_back(pt);
     }
 
+    void set_last_handle(const sf::Vector2f& pos) {
+        if(!points.empty()) {
+            points.back().set_front_handle(pos);
+        }
+    }
+
 private:
     std::vector<BezierPoint> points;
 
