@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "Test.hpp"
+#include "BezierPoint.hpp"
 
 using namespace std;
 
@@ -15,44 +15,13 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1024, 1024), "Bezier curves", sf::Style::Close, settings);
 
     // tmp bezier curve
-    sf::Vector2f pt1(300.f, 700.f);
-    sf::Vector2f pt1_control(120.f, 550.f);
-    sf::Vector2f pt2(600.f, 300.f);
-    sf::Vector2f pt2_control(800.f, 700.f);
-
-    sf::CircleShape pt1_shape, pt2_shape;
-    sf::CircleShape pt1_control_shape, pt2_control_shape;
-
-    for(auto* shape: {&pt1_shape, &pt2_shape, &pt1_control_shape, &pt2_control_shape}) {
-        shape->setRadius(4.f);
-        shape->setFillColor(sf::Color::White);
-        shape->setOutlineColor(sf::Color::Black);
-        shape->setOutlineThickness(2.f);
-        shape->setOrigin({shape->getRadius(), shape->getRadius()});
-    }
-    for(auto* shape: {&pt1_shape, &pt2_shape}) {
-        shape->setOutlineColor(sf::Color::Black);
-    }
-    for(auto* shape: {&pt1_control_shape, &pt2_control_shape}) {
-        shape->setOutlineColor(sf::Color::Red);
-    }
-
-    pt1_shape.setPosition(pt1);
-    pt2_shape.setPosition(pt2);
-    pt1_control_shape.setPosition(pt1_control);
-    pt2_control_shape.setPosition(pt2_control);
+    BezierPoint pt1({300.f, 700.f});
+    pt1.set_front_handle({120.f, 550.f});
+    BezierPoint pt2({600.f, 300.f});
+    pt2.set_back_handle({800.f, 700.f});
 
     while(window.isOpen())
     {
-        sf::VertexArray control_lines(sf::Lines, 4);
-        control_lines[0].position = pt1;
-        control_lines[1].position = pt1_control;
-        control_lines[2].position = pt2;
-        control_lines[3].position = pt2_control;
-        for(int i = 0; i < 4; ++i) {
-            control_lines[i].color = sf::Color::Red;
-        }
-
         // cubic bezier between pt1 and pt2 with controls pt1_control and pt2_control
         constexpr int bezier_point_count = 50;
         sf::VertexArray bezier(sf::LinesStrip, bezier_point_count);
@@ -60,9 +29,9 @@ int main() {
             bezier[i].color = sf::Color::Blue;
             float coef = i / float(bezier_point_count - 1);
 
-            sf::Vector2f inter1_1 = (1 - coef) * pt1 + coef * pt1_control;
-            sf::Vector2f inter1_2 = (1 - coef) * pt1_control + coef * pt2_control;
-            sf::Vector2f inter1_3 = (1 - coef) * pt2_control + coef * pt2;
+            sf::Vector2f inter1_1 = (1 - coef) * pt1.get_pos() + coef * pt1.get_front_handle();
+            sf::Vector2f inter1_2 = (1 - coef) * pt1.get_front_handle() + coef * pt2.get_back_handle();
+            sf::Vector2f inter1_3 = (1 - coef) * pt2.get_back_handle() + coef * pt2.get_pos();
 
             sf::Vector2f inter2_1 = (1 - coef) * inter1_1 + coef * inter1_2;
             sf::Vector2f inter2_2 = (1 - coef) * inter1_2 + coef * inter1_3;
@@ -87,10 +56,8 @@ int main() {
         window.clear(sf::Color::White);
 
         window.draw(bezier);
-        window.draw(control_lines);
-        for(auto* shape: {&pt1_shape, &pt2_shape, &pt1_control_shape, &pt2_control_shape}) {
-            window.draw(*shape);
-        }
+        window.draw(pt1);
+        window.draw(pt2);
 
         window.display();
     }
