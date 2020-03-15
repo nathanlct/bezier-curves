@@ -8,17 +8,9 @@ int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
-    sf::RenderWindow window(desktop, "Bezier curves", sf::Style::Close, settings);
-
-    // tmp bezier curve
-    BezierPoint pt1({300.f, 700.f});
-    pt1.set_front_handle({120.f, 550.f});
-    BezierPoint pt2({600.f, 300.f});
-    pt2.set_back_handle({800.f, 700.f});
-
+    sf::RenderWindow window(desktop, "Bezier curves", sf::Style::Default, settings);
+    
     BezierCurve curve;
-    curve.add(pt1);
-    curve.add(pt2);
 
     while(window.isOpen())
     {
@@ -28,6 +20,16 @@ int main() {
             switch(event.type) {
                 case sf::Event::Closed:
                     window.close();
+                    break;
+                case sf::Event::MouseButtonPressed:
+                    switch(event.mouseButton.button) {
+                        case sf::Mouse::Left:
+                            curve.add(BezierPoint({(float)event.mouseButton.x, 
+                                                   (float)event.mouseButton.y}));
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 default:
                     break;

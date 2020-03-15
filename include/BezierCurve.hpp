@@ -9,7 +9,9 @@
 class BezierCurve : public sf::Drawable {
 
 public:
-    BezierCurve() {}
+    BezierCurve():
+        points()
+    {}
 
     void add(BezierPoint pt) {
         points.push_back(pt);
@@ -23,7 +25,7 @@ private:
         constexpr int bezier_point_count = 50;
 
         // draw curves
-        for(int k = 0; k < points.size() - 1; ++k) {
+        for(int k = 0; k < (int)points.size() - 1; ++k) {
             sf::VertexArray bezier(sf::LinesStrip, bezier_point_count);
             for(int i = 0; i < bezier_point_count; ++i) {
                 auto pt1 = points[k];
