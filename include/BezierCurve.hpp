@@ -14,6 +14,9 @@ public:
     {}
 
     void add(BezierPoint pt) {
+        if(!points.empty()) {
+            points.back().set_focused(false);
+        }
         points.push_back(pt);
     }
 

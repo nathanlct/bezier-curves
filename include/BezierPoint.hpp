@@ -13,7 +13,8 @@ public:
         front_handle_shape(radius),
         back_handle_shape(radius),
         handles(sf::Lines, 4),
-        symmetric(true)
+        symmetric(true),
+        focused(2)
     {
         for(auto* shape: {&pos_shape, &front_handle_shape, &back_handle_shape}) {
             shape->setRadius(radius);
@@ -35,6 +36,10 @@ public:
         for(int i = 0; i < 4; ++i) {
             handles[i].color = sf::Color::Blue;
         }
+    }
+
+    void set_focused(bool new_focused) {
+        focused = new_focused;
     }
 
     sf::Vector2f get_pos() {
@@ -81,18 +86,25 @@ private:
     }
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        target.draw(handles, states);
+    {   
+        if(focused) {
+            target.draw(handles, states);
+        }
         target.draw(pos_shape, states);
-        target.draw(front_handle_shape, states);
-        target.draw(back_handle_shape, states);
+        if(focused) {
+            target.draw(front_handle_shape, states);
+            target.draw(back_handle_shape, states);
+        }
     }
 
     sf::Vector2f pos;
     sf::Vector2f front_handle;
     sf::Vector2f back_handle;
 
+    // whether handles are symmetric
     bool symmetric;
+    // whether handles are displayed
+    bool focused;
 
     sf::CircleShape pos_shape;
     sf::CircleShape front_handle_shape;
